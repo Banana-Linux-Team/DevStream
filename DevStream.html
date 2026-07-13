@@ -23,6 +23,7 @@
     color: white;
     margin: 0 auto;
     font-family: Inter;
+    min-height: 100vh;
   }
   button {
     background-color:#9ab8f5;
@@ -50,6 +51,8 @@
     border-radius: 0;
     gap: 10px;
     padding: 5px 10px;
+    position: sticky;
+    top: 0;
   }
 	.sidebar button {
 		background-color: #303134;
@@ -79,8 +82,10 @@
     width: 90%;
     min-width: 500px;
     min-height: 200px;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 0 8px #5b8def;
+    z-index: 1000;
   }
   .janeladecriarconta button {
     display: block;
@@ -106,8 +111,10 @@
     width: 90%;
     min-width: 500px;
     min-height: 200px;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 0 8px #5b8def;
+    z-index: 1000;
   }
   .janeladecriarconta h2 {
     color: #303134;
@@ -179,6 +186,7 @@
   }
   .Novosvideos {
 	  text-align: center;
+    padding: 10px;
   }
   textarea:focus{
 	  outline: none;
@@ -305,6 +313,8 @@
     border-bottom: 1px solid #333;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
   }
   
   .comment .comment-user {
@@ -314,6 +324,7 @@
   
   .comment .comment-text {
     color: #ddd;
+    flex: 1;
   }
   
   .comment .comment-time {
@@ -368,20 +379,59 @@
     margin: 5px 0;
   }
 
-  /* Estilo do player com interações abaixo */
-  .player-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
+  /* Estilo do player com interações abaixo - CORRIGIDO */
+  #janelaplayer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #5b8def;
+    text-align: center;
+    width: 92%;
+    max-width: 900px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(91, 139, 239, 0.3);
+    z-index: 1000;
+    display: none;
+  }
+
+  #janelaplayer::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #janelaplayer::-webkit-scrollbar-thumb {
+    background: #5b8def;
+    border-radius: 4px;
+  }
+
+  #janelaplayer::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+
+  #janelaplayer #player {
+    margin: 10px auto;
+    width: 100%;
+  }
+
+  #janelaplayer #player iframe {
+    border: 2px solid #5b8def;
+    border-radius: 10px;
+    width: 100%;
+    height: 400px;
+    max-height: 50vh;
   }
 
   .player-interactions {
     background: #1a1a1a;
     border-radius: 0 0 10px 10px;
     padding: 15px 20px;
-    border: 2px solid #5b8def;
-    border-top: none;
     max-width: 800px;
-    margin: -2px auto 20px auto;
+    margin: 0 auto;
+    text-align: left;
   }
 
   .player-interactions .video-title {
@@ -413,39 +463,51 @@
     font-size: 16px;
   }
 
-  .janelapostarvideos#janelaplayer {
-    background: #1a1a1a;
-    min-width: 90%;
-    max-width: 900px;
-    padding: 20px;
-  }
-
-  .janelapostarvideos#janelaplayer h2 {
-    color: white;
-    text-align: center;
-  }
-
-  .janelapostarvideos#janelaplayer #player {
-    margin: 10px auto;
-  }
-
-  .janelapostarvideos#janelaplayer #player iframe {
-    border: 2px solid #5b8def;
-    border-radius: 10px;
-  }
-
   .fechar-player-btn {
-    margin: 10px auto !important;
+    margin: 15px auto 5px auto !important;
     background: #5b8def !important;
     color: white !important;
     padding: 10px !important;
     border-radius: 10px !important;
     width: 200px !important;
     display: block !important;
+    border: none !important;
+    cursor: pointer !important;
   }
 
   .fechar-player-btn:hover {
     background: #4a7adf !important;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 999;
+  }
+
+  /* Responsivo */
+  @media (max-width: 600px) {
+    #janelaplayer {
+      width: 95%;
+      padding: 10px;
+      max-height: 95vh;
+    }
+    #janelaplayer #player iframe {
+      height: 250px;
+    }
+    .janeladecriarconta, .janelapostarvideos {
+      min-width: unset;
+      width: 95%;
+    }
+    .comment {
+      flex-direction: column;
+      gap: 2px;
+    }
   }
 </style>
 </head>
@@ -480,6 +542,10 @@
       <button class="assistir-btn" style="margin: 10px auto; padding: 8px 20px; border-radius: 20px; background: #5b8def; color: white; border: none; cursor: pointer; display: block;">▶ Assistir</button>
     </div>
   </div>
+  
+  <!-- Overlay para fechar clicando fora -->
+  <div class="overlay" id="overlay"></div>
+  
   <div id="janeladecriarconta" class="janeladecriarconta">
     <h2>Criar conta</h2>
     <input type="text" id="nomedaconta" placeholder="Digite um nome para sua conta">
@@ -494,7 +560,8 @@
     <button id="publicarvideo">Publicar vídeo</button>
     <button onclick="fecharjaneladobotaodepostarvideos()">Fechar</button>
   </div>
-  <div id="janelaplayer" class="janelapostarvideos" style="display: none;">
+  
+  <div id="janelaplayer">
     <div id="player"></div>
     <div class="player-interactions" id="player-interactions">
       <h2 class="video-title" id="titulodovideo">Título do Vídeo</h2>
@@ -532,8 +599,9 @@
         <div class="comments-list" id="comments-list"></div>
       </div>
     </div>
-    <button class="fechar-player-btn" onclick="fecharPlayer()">Fechar</button>
+    <button class="fechar-player-btn" onclick="fecharPlayer()">✕ Fechar</button>
   </div>
+  
   <script>
     const criarconta = document.getElementById("criarconta");
     const janela = document.getElementById("janeladecriarconta");
@@ -626,6 +694,8 @@
         linkEmbed += '&rel=0&modestbranding=1';
       }
       
+      // Mostrar overlay e janela
+      document.getElementById('overlay').style.display = 'block';
       document.getElementById('janelaplayer').style.display = 'block';
       document.getElementById('titulodovideo').textContent = titulo;
       document.getElementById('descricaodovideo').textContent = desc || 'Sem descrição';
@@ -652,12 +722,27 @@
       iframe.allowFullscreen = true;
       
       playerDiv.appendChild(iframe);
+      
+      // Impedir scroll do body
+      document.body.style.overflow = 'hidden';
     }
 
     function fecharPlayer() {
-      document.getElementById('janelaplayer').style.display='none';
-      document.getElementById('player').innerHTML='';
+      document.getElementById('janelaplayer').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('player').innerHTML = '';
+      document.body.style.overflow = 'auto';
     }
+
+    // Fechar com overlay
+    document.getElementById('overlay').onclick = fecharPlayer;
+
+    // Fechar com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        fecharPlayer();
+      }
+    });
 
     function converterParaEmbed(link){
       if(link.includes('watch?v=')){
