@@ -471,7 +471,7 @@
     background: #1a1a1a;
   }
 
-  /* Header do player (logo + nome) */
+  /* Header do player (logo + nome) - SEM BOTÃO FECHAR */
   .player-header {
     display: flex;
     align-items: center;
@@ -501,21 +501,6 @@
     background-clip: text;
     color: transparent;
     -webkit-background-clip: text;
-  }
-
-  .player-header .fechar-player-btn {
-    margin-left: auto;
-    background: #5b8def !important;
-    color: white !important;
-    padding: 8px 20px !important;
-    border-radius: 8px !important;
-    border: none !important;
-    cursor: pointer !important;
-    font-weight: bold;
-  }
-
-  .player-header .fechar-player-btn:hover {
-    background: #4a7adf !important;
   }
 
   /* Conteúdo do player */
@@ -584,10 +569,6 @@
     }
     .player-header h1 {
       font-size: 18px;
-    }
-    .player-header .fechar-player-btn {
-      padding: 6px 12px !important;
-      font-size: 12px;
     }
     .janeladecriarconta, .janelapostarvideos {
       min-width: unset;
@@ -660,7 +641,7 @@
   
   <!-- PLAYER TELA INTEIRA -->
   <div id="janelaplayer">
-    <!-- Header do player (logo + nome + fechar) -->
+    <!-- Header do player (logo + nome) - SEM BOTÃO FECHAR -->
     <div class="player-header" id="playerLogoLink">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="40" height="40">
         <defs>
@@ -672,7 +653,6 @@
         <path d="M 60 40 L 160 100 L 60 160 Z" fill="url(#playGrad2)" stroke="#000000" stroke-width="4"/>
       </svg>
       <h1><span class="Nome">DevStream</span></h1>
-      <button class="fechar-player-btn" onclick="fecharPlayer()">✕ Fechar</button>
     </div>
     
     <div class="player-content">
@@ -717,6 +697,45 @@
   </div>
   
   <script>
+    // ========== SALVAR E CARREGAR VÍDEOS ==========
+    function salvarVideos() {
+      const videos = [];
+      const cards = document.querySelectorAll('.carddosvideos:not(#modelodecard)');
+      cards.forEach(card => {
+        const titulo = card.querySelector('.video-title').textContent;
+        const desc = card.querySelector('.video-desc').textContent;
+        const link = card.dataset.link || '';
+        videos.push({ titulo, desc, link });
+      });
+      localStorage.setItem('videos', JSON.stringify(videos));
+    }
+
+    function carregarVideos() {
+      const videosSalvos = localStorage.getItem('videos');
+      if (videosSalvos) {
+        const videos = JSON.parse(videosSalvos);
+        videos.forEach(video => {
+          criarCardVideo(video.titulo, video.link, video.desc);
+        });
+      }
+    }
+
+    function criarCardVideo(nome, link, desc) {
+      let modelo = document.getElementById('modelodecard');
+      let NovoCard = modelo.cloneNode(true);
+      NovoCard.style.display = "block";
+      NovoCard.dataset.link = link;
+      NovoCard.querySelector('.video-title').textContent = nome;
+      NovoCard.querySelector('.video-desc').textContent = desc || '';
+      
+      let btnAssistir = NovoCard.querySelector('.assistir-btn');
+      btnAssistir.onclick = function() {
+        abrirPlayer(link, nome, desc);
+      };
+      
+      document.querySelector('.Novosvideos').appendChild(NovoCard);
+    }
+
     // ========== FUNÇÕES DE INÍCIO ==========
     function irParaInicio() {
       // Fecha o player se estiver aberto
@@ -734,11 +753,7 @@
     document.getElementById('logoLink').onclick = irParaInicio;
 
     // Clique na logo do player
-    document.getElementById('playerLogoLink').onclick = function(e) {
-      // Se clicou no botão de fechar, não faz nada
-      if (e.target.classList.contains('fechar-player-btn')) return;
-      irParaInicio();
-    };
+    document.getElementById('playerLogoLink').onclick = irParaInicio;
 
     // Botão Início da sidebar
     document.getElementById('btnInicio').onclick = irParaInicio;
@@ -767,13 +782,6 @@
         alert('Digite um nome');
       }
     }
-    window.onload = function() {
-      const nomesalvo = localStorage.getItem('nomedousuario');
-      if(nomesalvo) {
-        document.getElementById('nomedousuario').textContent = nomesalvo;
-        document.getElementById('criarconta').style.display = 'none';
-      }
-    }
 
     // ========== POSTAR VÍDEOS ==========
     const postarvideos = document.getElementById("postarvideos");
@@ -795,18 +803,8 @@
         return;
       }
       
-      let modelo = document.getElementById('modelodecard');
-      let NovoCard = modelo.cloneNode(true);
-      NovoCard.style.display = "block";
-      NovoCard.querySelector('.video-title').textContent = nome;
-      NovoCard.querySelector('.video-desc').textContent = desc;
-      
-      let btnAssistir = NovoCard.querySelector('.assistir-btn');
-      btnAssistir.onclick = function() {
-        abrirPlayer(link, nome, desc);
-      };
-      
-      document.querySelector('.Novosvideos').appendChild(NovoCard);
+      criarCardVideo(nome, link, desc);
+      salvarVideos();
       
       document.getElementById('nomedovideo').value = '';
       document.getElementById('linkparaovideo').value = '';
@@ -974,6 +972,19 @@
       if (e.key === 'Enter') {
         document.getElementById('comment-submit').click();
       }
+    };
+
+    // ========== INICIALIZAR ==========
+    window.onload = function() {
+      // Carregar nome do usuário
+      const nomesalvo = localStorage.getItem('nomedousuario');
+      if(nomesalvo) {
+        document.getElementById('nomedousuario').textContent = nomesalvo;
+        document.getElementById('criarconta').style.display = 'none';
+      }
+      
+      // Carregar vídeos salvos
+      carregarVideos();
     };
   </script>
 </body>
