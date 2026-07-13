@@ -32,6 +32,7 @@
     display: flex;
     font-weight: bold;
     align-items: center;
+    cursor: pointer;
   }
   button:hover {
     background-color: #5b8def;
@@ -47,13 +48,16 @@
     top: 0;
     left: 0;
     border-radius: 0;
+    gap: 10px;
+    padding: 5px 10px;
   }
 	.sidebar button {
 		background-color: #303134;
 		color: white;
+    padding: 8px 15px;
 	}
 	.sidebar button:hover {
-		background-color: #303134
+		background-color: #444;
 		color: white;
 	}
   a {
@@ -86,7 +90,7 @@
 	color: white;
   }
   .janeladecriarconta button:hover {
-    background:transparent;
+    background: #444;
   }
   .janelapostarvideos {
     display: none;
@@ -117,7 +121,7 @@
 	  color: white;
   }
   .janelapostarvideos button:hover {
-    background: transparent;
+    background: #444;
   }
   .janelapostarvideos h2 {
     color: #303134;
@@ -189,6 +193,8 @@
 	  background-color: #303134;
 	  padding: 10px 3px;
 	  display: none;
+    margin: 10px auto;
+    max-width: 800px;
   }
   .carddosvideos:hover {
 	  background-color: #323232;
@@ -214,6 +220,153 @@
 	textarea::-webkit-scrollbar-thumb {
 		background: #5b8def;
 	  }
+  
+  /* Estilos para os novos elementos */
+  .video-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 10px 0;
+    flex-wrap: wrap;
+  }
+  
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: transparent;
+    color: white;
+    border: 1px solid #555;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .action-btn:hover {
+    background: #444;
+    border-color: #5b8def;
+  }
+  
+  .action-btn.liked {
+    color: #ff4444;
+    border-color: #ff4444;
+  }
+  
+  .action-btn.disliked {
+    color: #ffaa00;
+    border-color: #ffaa00;
+  }
+  
+  .comments-section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    border: 1px solid #333;
+  }
+  
+  .comments-section h3 {
+    color: #9ab8f5;
+    margin-bottom: 10px;
+  }
+  
+  .comment-input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .comment-input-area input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+  }
+  
+  .comment-input-area button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #5b8def;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .comment-input-area button:hover {
+    background: #4a7adf;
+  }
+  
+  .comment {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .comment .comment-user {
+    color: #5b8def;
+    font-weight: bold;
+  }
+  
+  .comment .comment-text {
+    color: #ddd;
+  }
+  
+  .comment .comment-time {
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .coracao-svg {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  
+  .coracao-svg:hover {
+    transform: scale(1.2);
+  }
+  
+  .like-count, .dislike-count {
+    font-size: 14px;
+  }
+  
+  .share-btn {
+    background: transparent;
+    border: 1px solid #555;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .share-btn:hover {
+    background: #444;
+    border-color: #5b8def;
+  }
+  
+  .carddosvideos .video-container {
+    padding: 0 15px;
+  }
+  
+  .carddosvideos .video-title {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  
+  .carddosvideos .video-desc {
+    color: #aaa;
+    font-size: 14px;
+    margin: 5px 0;
+  }
 </style>
 </head>
 <body>
@@ -243,7 +396,43 @@
     <p>Vídeos postados a pouco tempo</p>
   </div>
   <div class="carddosvideos" id="modelodecard" style="display: none;">
-  <h2>Titulo</h2></div>
+    <div class="video-container">
+      <h2 class="video-title">Titulo</h2>
+      <p class="video-desc">Descrição</p>
+      <div class="video-actions">
+        <button class="action-btn like-btn">
+          <svg class="coracao-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="like-count">0</span>
+        </button>
+        <button class="action-btn dislike-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="rotate(180, 12, 12)"/>
+          </svg>
+          <span class="dislike-count">0</span>
+        </button>
+        <button class="share-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          Compartilhar
+        </button>
+      </div>
+      <div class="comments-section">
+        <h3>💬 Comentários</h3>
+        <div class="comment-input-area">
+          <input type="text" placeholder="Escreva um comentário..." class="comment-input">
+          <button class="comment-submit">Comentar</button>
+        </div>
+        <div class="comments-list"></div>
+      </div>
+    </div>
+  </div>
   <div id="janeladecriarconta" class="janeladecriarconta">
     <h2>Criar conta</h2>
     <input type="text" id="nomedaconta" placeholder="Digite um nome para sua conta">
@@ -316,19 +505,109 @@ window.onload = function() {
   let modelo = document.getElementById('modelodecard');
   let NovoCard = modelo.cloneNode(true);
   NovoCard.style.display = "block";
-  NovoCard.querySelector('h2').textContent = nome;
+  NovoCard.querySelector('.video-title').textContent = nome;
+  NovoCard.querySelector('.video-desc').textContent = desc;
   
-  let descricaoP = document.createElement('p');
-  descricaoP.textContent = desc;
-  NovoCard.appendChild(descricaoP);
-  
+  // Configurar o botão Assistir
   let btnAssistir = document.createElement('button');
   btnAssistir.textContent = "▶ Assistir";
+  btnAssistir.style.cssText = "margin: 10px auto; padding: 8px 20px; border-radius: 20px; background: #5b8def; color: white; border: none; cursor: pointer; display: block;";
   btnAssistir.onclick = function() {
     abrirPlayer(link, nome);
   };
-  NovoCard.appendChild(btnAssistir);
+  NovoCard.querySelector('.video-container').appendChild(btnAssistir);
   
+  // Configurar like/dislike
+  const likeBtn = NovoCard.querySelector('.like-btn');
+  const dislikeBtn = NovoCard.querySelector('.dislike-btn');
+  const likeCount = NovoCard.querySelector('.like-count');
+  const dislikeCount = NovoCard.querySelector('.dislike-count');
+  let liked = false;
+  let disliked = false;
+  
+  likeBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (!liked) {
+      liked = true;
+      likeBtn.classList.add('liked');
+      likeCount.textContent = parseInt(likeCount.textContent) + 1;
+      if (disliked) {
+        disliked = false;
+        dislikeBtn.classList.remove('disliked');
+        dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+      }
+    } else {
+      liked = false;
+      likeBtn.classList.remove('liked');
+      likeCount.textContent = parseInt(likeCount.textContent) - 1;
+    }
+  };
+  
+  dislikeBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (!disliked) {
+      disliked = true;
+      dislikeBtn.classList.add('disliked');
+      dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+      if (liked) {
+        liked = false;
+        likeBtn.classList.remove('liked');
+        likeCount.textContent = parseInt(likeCount.textContent) - 1;
+      }
+    } else {
+      disliked = false;
+      dislikeBtn.classList.remove('disliked');
+      dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+    }
+  };
+  
+  // Configurar compartilhamento
+  const shareBtn = NovoCard.querySelector('.share-btn');
+  shareBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (navigator.share) {
+      navigator.share({
+        title: nome,
+        text: desc || 'Assista este vídeo no DevStream!',
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link copiado para a área de transferência!');
+      }).catch(() => {
+        alert('Compartilhe este vídeo: ' + window.location.href);
+      });
+    }
+  };
+  
+  // Configurar comentários
+  const commentInput = NovoCard.querySelector('.comment-input');
+  const commentSubmit = NovoCard.querySelector('.comment-submit');
+  const commentsList = NovoCard.querySelector('.comments-list');
+  
+  commentSubmit.onclick = function(e) {
+    e.stopPropagation();
+    const text = commentInput.value.trim();
+    if (text) {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      const user = document.getElementById('nomedousuario').textContent || 'Anônimo';
+      const time = new Date().toLocaleString();
+      commentDiv.innerHTML = `
+        <span class="comment-user">${user}</span>
+        <span class="comment-text">${text}</span>
+        <span class="comment-time">${time}</span>
+      `;
+      commentsList.appendChild(commentDiv);
+      commentInput.value = '';
+    }
+  };
+  
+  commentInput.onkeypress = function(e) {
+    if (e.key === 'Enter') {
+      commentSubmit.click();
+    }
+  };
   
   document.querySelector('.Novosvideos').appendChild(NovoCard);
   
