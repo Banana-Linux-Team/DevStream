@@ -11,6 +11,7 @@
     text-align: center;
     border-radius: 0;
 	  font-weight: bold;
+    cursor: pointer;
   }
   .logoenome p {
     color: white;
@@ -379,24 +380,22 @@
     margin: 5px 0;
   }
 
-  /* Estilo do player com interações abaixo - CORRIGIDO */
+  /* ========= PLAYER TELA INTEIRA ========= */
   #janelaplayer {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 15px;
-    border: 2px solid #5b8def;
-    text-align: center;
-    width: 92%;
-    max-width: 900px;
-    max-height: 92vh;
-    overflow-y: auto;
-    box-shadow: 0 0 30px rgba(91, 139, 239, 0.3);
-    z-index: 1000;
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0a0a0a;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    transform: none;
+    overflow-y: auto;
   }
 
   #janelaplayer::-webkit-scrollbar {
@@ -412,37 +411,90 @@
     background: #1a1a1a;
   }
 
-  #janelaplayer #player {
-    margin: 10px auto;
-    width: 100%;
+  /* Header do player (logo + nome) */
+  .player-header {
+    display: flex;
+    align-items: center;
+    background-color: #303134;
+    padding: 10px 20px;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    border-bottom: 2px solid #5b8def;
   }
 
-  #janelaplayer #player iframe {
+  .player-header svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-header h1 {
+    margin: 0;
+    font-size: 24px;
+    -webkit-text-stroke: 1px #000000;
+  }
+
+  .player-header .Nome {
+    background: linear-gradient(to right, #5b8def 50%, #9ab8f5 50%);
+    background-clip: text;
+    color: transparent;
+    -webkit-background-clip: text;
+  }
+
+  .player-header .fechar-player-btn {
+    margin-left: auto;
+    background: #5b8def !important;
+    color: white !important;
+    padding: 8px 20px !important;
+    border-radius: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold;
+  }
+
+  .player-header .fechar-player-btn:hover {
+    background: #4a7adf !important;
+  }
+
+  /* Conteúdo do player */
+  .player-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .player-content #player {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .player-content #player iframe {
+    width: 100%;
+    height: 60vh;
     border: 2px solid #5b8def;
     border-radius: 10px;
-    width: 100%;
-    height: 400px;
-    max-height: 50vh;
+    min-height: 400px;
   }
 
   .player-interactions {
     background: #1a1a1a;
-    border-radius: 0 0 10px 10px;
-    padding: 15px 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
     text-align: left;
   }
 
   .player-interactions .video-title {
     color: white;
-    font-size: 20px;
+    font-size: 22px;
     margin: 0 0 10px 0;
   }
 
   .player-interactions .video-desc {
     color: #aaa;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0 0 15px 0;
   }
 
@@ -463,42 +515,18 @@
     font-size: 16px;
   }
 
-  .fechar-player-btn {
-    margin: 15px auto 5px auto !important;
-    background: #5b8def !important;
-    color: white !important;
-    padding: 10px !important;
-    border-radius: 10px !important;
-    width: 200px !important;
-    display: block !important;
-    border: none !important;
-    cursor: pointer !important;
-  }
-
-  .fechar-player-btn:hover {
-    background: #4a7adf !important;
-  }
-
-  .overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    z-index: 999;
-  }
-
   /* Responsivo */
   @media (max-width: 600px) {
-    #janelaplayer {
-      width: 95%;
-      padding: 10px;
-      max-height: 95vh;
+    .player-content #player iframe {
+      height: 40vh;
+      min-height: 200px;
     }
-    #janelaplayer #player iframe {
-      height: 250px;
+    .player-header h1 {
+      font-size: 18px;
+    }
+    .player-header .fechar-player-btn {
+      padding: 6px 12px !important;
+      font-size: 12px;
     }
     .janeladecriarconta, .janelapostarvideos {
       min-width: unset;
@@ -508,12 +536,15 @@
       flex-direction: column;
       gap: 2px;
     }
+    .player-content {
+      padding: 10px;
+    }
   }
 </style>
 </head>
 <body>
   <header>
-  <div class="logoenome">
+  <div class="logoenome" id="logoLink">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="64" height="64">
   <defs>
     <linearGradient id="playGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -528,11 +559,11 @@
   </div>
   </header>
   <div class="sidebar">
-    <button class="Início">Início</button>
+    <button class="Início" id="btnInicio">Início</button>
     <button id="postarvideos" title="Postar um Vídeo">+ Postar vídeos</button>
     <button id="criarconta" title="Criar conta">Criar conta</button>
   </div>
-  <div class="Novosvideos">
+  <div class="Novosvideos" id="conteudoPrincipal">
     <p>Vídeos postados a pouco tempo</p>
   </div>
   <div class="carddosvideos" id="modelodecard" style="display: none;">
@@ -542,9 +573,6 @@
       <button class="assistir-btn" style="margin: 10px auto; padding: 8px 20px; border-radius: 20px; background: #5b8def; color: white; border: none; cursor: pointer; display: block;">▶ Assistir</button>
     </div>
   </div>
-  
-  <!-- Overlay para fechar clicando fora -->
-  <div class="overlay" id="overlay"></div>
   
   <div id="janeladecriarconta" class="janeladecriarconta">
     <h2>Criar conta</h2>
@@ -561,48 +589,92 @@
     <button onclick="fecharjaneladobotaodepostarvideos()">Fechar</button>
   </div>
   
+  <!-- PLAYER TELA INTEIRA -->
   <div id="janelaplayer">
-    <div id="player"></div>
-    <div class="player-interactions" id="player-interactions">
-      <h2 class="video-title" id="titulodovideo">Título do Vídeo</h2>
-      <p class="video-desc" id="descricaodovideo">Descrição do vídeo</p>
-      <div class="video-actions">
-        <button class="action-btn like-btn" id="like-btn">
-          <svg class="coracao-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-          <span class="like-count" id="like-count">0</span>
-        </button>
-        <button class="action-btn dislike-btn" id="dislike-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="rotate(180, 12, 12)"/>
-          </svg>
-          <span class="dislike-count" id="dislike-count">0</span>
-        </button>
-        <button class="share-btn" id="share-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="18" cy="5" r="3"/>
-            <circle cx="6" cy="12" r="3"/>
-            <circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-          </svg>
-          Compartilhar
-        </button>
-      </div>
-      <div class="comments-section">
-        <h3>💬 Comentários</h3>
-        <div class="comment-input-area">
-          <input type="text" placeholder="Escreva um comentário..." class="comment-input" id="comment-input">
-          <button class="comment-submit" id="comment-submit">Comentar</button>
+    <!-- Header do player (logo + nome + fechar) -->
+    <div class="player-header" id="playerLogoLink">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="40" height="40">
+        <defs>
+          <linearGradient id="playGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5b8def"/>
+            <stop offset="100%" stop-color="#3b7bdd"/>
+          </linearGradient>
+        </defs>
+        <path d="M 60 40 L 160 100 L 60 160 Z" fill="url(#playGrad2)" stroke="#000000" stroke-width="4"/>
+      </svg>
+      <h1><span class="Nome">DevStream</span></h1>
+      <button class="fechar-player-btn" onclick="fecharPlayer()">✕ Fechar</button>
+    </div>
+    
+    <div class="player-content">
+      <div id="player"></div>
+      <div class="player-interactions" id="player-interactions">
+        <h2 class="video-title" id="titulodovideo">Título do Vídeo</h2>
+        <p class="video-desc" id="descricaodovideo">Descrição do vídeo</p>
+        <div class="video-actions">
+          <button class="action-btn like-btn" id="like-btn">
+            <svg class="coracao-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            <span class="like-count" id="like-count">0</span>
+          </button>
+          <button class="action-btn dislike-btn" id="dislike-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="rotate(180, 12, 12)"/>
+            </svg>
+            <span class="dislike-count" id="dislike-count">0</span>
+          </button>
+          <button class="share-btn" id="share-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            Compartilhar
+          </button>
         </div>
-        <div class="comments-list" id="comments-list"></div>
+        <div class="comments-section">
+          <h3>💬 Comentários</h3>
+          <div class="comment-input-area">
+            <input type="text" placeholder="Escreva um comentário..." class="comment-input" id="comment-input">
+            <button class="comment-submit" id="comment-submit">Comentar</button>
+          </div>
+          <div class="comments-list" id="comments-list"></div>
+        </div>
       </div>
     </div>
-    <button class="fechar-player-btn" onclick="fecharPlayer()">✕ Fechar</button>
   </div>
   
   <script>
+    // ========== FUNÇÕES DE INÍCIO ==========
+    function irParaInicio() {
+      // Fecha o player se estiver aberto
+      if (document.getElementById('janelaplayer').style.display === 'block') {
+        fecharPlayer();
+      }
+      // Fecha outras janelas
+      document.getElementById('janeladecriarconta').style.display = 'none';
+      document.getElementById('janeladobotaodepostarvideos').style.display = 'none';
+      // Rola para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Clique na logo principal
+    document.getElementById('logoLink').onclick = irParaInicio;
+
+    // Clique na logo do player
+    document.getElementById('playerLogoLink').onclick = function(e) {
+      // Se clicou no botão de fechar, não faz nada
+      if (e.target.classList.contains('fechar-player-btn')) return;
+      irParaInicio();
+    };
+
+    // Botão Início da sidebar
+    document.getElementById('btnInicio').onclick = irParaInicio;
+
+    // ========== CRIAÇÃO DE CONTA ==========
     const criarconta = document.getElementById("criarconta");
     const janela = document.getElementById("janeladecriarconta");
 
@@ -633,6 +705,8 @@
         document.getElementById('criarconta').style.display = 'none';
       }
     }
+
+    // ========== POSTAR VÍDEOS ==========
     const postarvideos = document.getElementById("postarvideos");
     const janelapostarvideos = document.getElementById("janeladobotaodepostarvideos");
     postarvideos.onclick = function () {
@@ -673,6 +747,7 @@
       alert("Vídeo publicado!");
     }
 
+    // ========== PLAYER ==========
     let currentLink = '';
     let currentTitle = '';
     let currentDesc = '';
@@ -694,8 +769,7 @@
         linkEmbed += '&rel=0&modestbranding=1';
       }
       
-      // Mostrar overlay e janela
-      document.getElementById('overlay').style.display = 'block';
+      // Mostrar player tela inteira
       document.getElementById('janelaplayer').style.display = 'block';
       document.getElementById('titulodovideo').textContent = titulo;
       document.getElementById('descricaodovideo').textContent = desc || 'Sem descrição';
@@ -729,13 +803,9 @@
 
     function fecharPlayer() {
       document.getElementById('janelaplayer').style.display = 'none';
-      document.getElementById('overlay').style.display = 'none';
       document.getElementById('player').innerHTML = '';
       document.body.style.overflow = 'auto';
     }
-
-    // Fechar com overlay
-    document.getElementById('overlay').onclick = fecharPlayer;
 
     // Fechar com ESC
     document.addEventListener('keydown', function(e) {
@@ -754,7 +824,7 @@
       return link;
     }
 
-    // Like
+    // ========== LIKE / DISLIKE ==========
     document.getElementById('like-btn').onclick = function() {
       if (!liked) {
         liked = true;
@@ -775,7 +845,6 @@
       }
     };
 
-    // Dislike
     document.getElementById('dislike-btn').onclick = function() {
       if (!disliked) {
         disliked = true;
@@ -796,7 +865,7 @@
       }
     };
 
-    // Compartilhar
+    // ========== COMPARTILHAR ==========
     document.getElementById('share-btn').onclick = function() {
       if (navigator.share) {
         navigator.share({
@@ -813,7 +882,7 @@
       }
     };
 
-    // Comentários
+    // ========== COMENTÁRIOS ==========
     document.getElementById('comment-submit').onclick = function() {
       const input = document.getElementById('comment-input');
       const text = input.value.trim();
