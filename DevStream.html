@@ -367,6 +367,86 @@
     font-size: 14px;
     margin: 5px 0;
   }
+
+  /* Estilo do player com interações abaixo */
+  .player-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .player-interactions {
+    background: #1a1a1a;
+    border-radius: 0 0 10px 10px;
+    padding: 15px 20px;
+    border: 2px solid #5b8def;
+    border-top: none;
+    max-width: 800px;
+    margin: -2px auto 20px auto;
+  }
+
+  .player-interactions .video-title {
+    color: white;
+    font-size: 20px;
+    margin: 0 0 10px 0;
+  }
+
+  .player-interactions .video-desc {
+    color: #aaa;
+    font-size: 14px;
+    margin: 0 0 15px 0;
+  }
+
+  .player-interactions .video-actions {
+    justify-content: flex-start;
+    margin: 10px 0 15px 0;
+  }
+
+  .player-interactions .comments-section {
+    margin: 10px 0 0 0;
+    background: transparent;
+    border: 1px solid #333;
+    padding: 10px;
+  }
+
+  .player-interactions .comments-section h3 {
+    color: #9ab8f5;
+    font-size: 16px;
+  }
+
+  .janelapostarvideos#janelaplayer {
+    background: #1a1a1a;
+    min-width: 90%;
+    max-width: 900px;
+    padding: 20px;
+  }
+
+  .janelapostarvideos#janelaplayer h2 {
+    color: white;
+    text-align: center;
+  }
+
+  .janelapostarvideos#janelaplayer #player {
+    margin: 10px auto;
+  }
+
+  .janelapostarvideos#janelaplayer #player iframe {
+    border: 2px solid #5b8def;
+    border-radius: 10px;
+  }
+
+  .fechar-player-btn {
+    margin: 10px auto !important;
+    background: #5b8def !important;
+    color: white !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    width: 200px !important;
+    display: block !important;
+  }
+
+  .fechar-player-btn:hover {
+    background: #4a7adf !important;
+  }
 </style>
 </head>
 <body>
@@ -387,8 +467,6 @@
   </header>
   <div class="sidebar">
     <button class="Início">Início</button>
-    
-    
     <button id="postarvideos" title="Postar um Vídeo">+ Postar vídeos</button>
     <button id="criarconta" title="Criar conta">Criar conta</button>
   </div>
@@ -399,20 +477,42 @@
     <div class="video-container">
       <h2 class="video-title">Titulo</h2>
       <p class="video-desc">Descrição</p>
+      <button class="assistir-btn" style="margin: 10px auto; padding: 8px 20px; border-radius: 20px; background: #5b8def; color: white; border: none; cursor: pointer; display: block;">▶ Assistir</button>
+    </div>
+  </div>
+  <div id="janeladecriarconta" class="janeladecriarconta">
+    <h2>Criar conta</h2>
+    <input type="text" id="nomedaconta" placeholder="Digite um nome para sua conta">
+    <button onclick="criarConta()">Criar conta</button>
+    <button onclick="fecharjaneladecriarconta()">fechar</button>
+  </div>
+  <div id="janeladobotaodepostarvideos" class="janelapostarvideos">
+    <h2>Postar um video</h2>
+    <input type="text" id="nomedovideo" placeholder="Escreva aqui o nome para o seu vídeo">
+    <input type="text" id="linkparaovideo" placeholder="Link para o vídeo do Youtube">
+    <textarea id="descrição" placeholder="Descrição" rows="4"></textarea>
+    <button id="publicarvideo">Publicar vídeo</button>
+    <button onclick="fecharjaneladobotaodepostarvideos()">Fechar</button>
+  </div>
+  <div id="janelaplayer" class="janelapostarvideos" style="display: none;">
+    <div id="player"></div>
+    <div class="player-interactions" id="player-interactions">
+      <h2 class="video-title" id="titulodovideo">Título do Vídeo</h2>
+      <p class="video-desc" id="descricaodovideo">Descrição do vídeo</p>
       <div class="video-actions">
-        <button class="action-btn like-btn">
+        <button class="action-btn like-btn" id="like-btn">
           <svg class="coracao-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
-          <span class="like-count">0</span>
+          <span class="like-count" id="like-count">0</span>
         </button>
-        <button class="action-btn dislike-btn">
+        <button class="action-btn dislike-btn" id="dislike-btn">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="rotate(180, 12, 12)"/>
           </svg>
-          <span class="dislike-count">0</span>
+          <span class="dislike-count" id="dislike-count">0</span>
         </button>
-        <button class="share-btn">
+        <button class="share-btn" id="share-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="18" cy="5" r="3"/>
             <circle cx="6" cy="12" r="3"/>
@@ -426,34 +526,15 @@
       <div class="comments-section">
         <h3>💬 Comentários</h3>
         <div class="comment-input-area">
-          <input type="text" placeholder="Escreva um comentário..." class="comment-input">
-          <button class="comment-submit">Comentar</button>
+          <input type="text" placeholder="Escreva um comentário..." class="comment-input" id="comment-input">
+          <button class="comment-submit" id="comment-submit">Comentar</button>
         </div>
-        <div class="comments-list"></div>
+        <div class="comments-list" id="comments-list"></div>
       </div>
     </div>
+    <button class="fechar-player-btn" onclick="fecharPlayer()">Fechar</button>
   </div>
-  <div id="janeladecriarconta" class="janeladecriarconta">
-    <h2>Criar conta</h2>
-    <input type="text" id="nomedaconta" placeholder="Digite um nome para sua conta">
-    <button onclick="criarConta()">Criar conta</button>
-    <button onclick="fecharjaneladecriarconta()">fechar</button>
-    
-    </div>
-    <div id="janeladobotaodepostarvideos" class="janelapostarvideos">
-      <h2>Postar um video</h2>
-      <input type="text" id="nomedovideo" placeholder="Escreva aqui o nome para o seu vídeo">
-      <input type="text" id="linkparaovideo" placeholder="Link para o vídeo do Youtube">
-      <textarea id="descrição" placeholder="Descrição" rows="4"></textarea>
-      <button id="publicarvideo">Publicar vídeo</button>
-      <button onclick="fecharjaneladobotaodepostarvideos()">Fechar</button>
-      </div>
-    <div id="janelaplayer" class="janelapostarvideos" style="display: none;">
-		<h2 id="titulodovideo">Título do Vídeo</h2>
-  <div id="player"></div>
-  <button onclick="fecharPlayer()">Fechar</button>
-</div>
-    <script>
+  <script>
     const criarconta = document.getElementById("criarconta");
     const janela = document.getElementById("janeladecriarconta");
 
@@ -465,199 +546,212 @@
       janeladecriarconta.style.display = "none";
     }
     function criarConta() { 
-  const nome = document.getElementById('nomedaconta').value;
-  if (nome) {
-    document.getElementById('nomedousuario').textContent = nome;
-    localStorage.setItem('nomedousuario', nome);
-    const nomesalvo = localStorage.getItem('nomedousuario');
-    document.getElementById('criarconta').style.display = 'none';
-    alert('Conta criada Bem Vindo, ' + nome);
-    fecharjaneladecriarconta();
-  } else {
-    alert('Digite um nome');
-  }
-}
-window.onload = function() {
-  const nomesalvo = localStorage.getItem('nomedousuario');
-  if(nomesalvo) {
-  document.getElementById('nomedousuario').textContent = nomesalvo;
-  document.getElementById('criarconta').style.display = 'none';
-  }
-}
+      const nome = document.getElementById('nomedaconta').value;
+      if (nome) {
+        document.getElementById('nomedousuario').textContent = nome;
+        localStorage.setItem('nomedousuario', nome);
+        const nomesalvo = localStorage.getItem('nomedousuario');
+        document.getElementById('criarconta').style.display = 'none';
+        alert('Conta criada Bem Vindo, ' + nome);
+        fecharjaneladecriarconta();
+      } else {
+        alert('Digite um nome');
+      }
+    }
+    window.onload = function() {
+      const nomesalvo = localStorage.getItem('nomedousuario');
+      if(nomesalvo) {
+        document.getElementById('nomedousuario').textContent = nomesalvo;
+        document.getElementById('criarconta').style.display = 'none';
+      }
+    }
     const postarvideos = document.getElementById("postarvideos");
     const janelapostarvideos = document.getElementById("janeladobotaodepostarvideos");
     postarvideos.onclick = function () {
       janelapostarvideos.style.display = "block"
     };
-      function fecharjaneladobotaodepostarvideos () {
-        janelapostarvideos.style.display = "none"
+    function fecharjaneladobotaodepostarvideos () {
+      janelapostarvideos.style.display = "none"
+    }
+    
+    document.getElementById('publicarvideo').onclick = function() {
+      let nome = document.getElementById('nomedovideo').value;
+      let link = document.getElementById('linkparaovideo').value;
+      let desc = document.getElementById('descrição').value;
+      
+      if (nome === "" || link === "") {
+        alert("Preencha tudo");
+        return;
       }
-     document.getElementById('publicarvideo').onclick = function() {
-  let nome = document.getElementById('nomedovideo').value;
-  let link = document.getElementById('linkparaovideo').value;
-  let desc = document.getElementById('descrição').value;
-  
-  if (nome === "" || link === "") {
-    alert("Preencha tudo");
-    return;
-  }
-  
-  let modelo = document.getElementById('modelodecard');
-  let NovoCard = modelo.cloneNode(true);
-  NovoCard.style.display = "block";
-  NovoCard.querySelector('.video-title').textContent = nome;
-  NovoCard.querySelector('.video-desc').textContent = desc;
-  
-  // Configurar o botão Assistir
-  let btnAssistir = document.createElement('button');
-  btnAssistir.textContent = "▶ Assistir";
-  btnAssistir.style.cssText = "margin: 10px auto; padding: 8px 20px; border-radius: 20px; background: #5b8def; color: white; border: none; cursor: pointer; display: block;";
-  btnAssistir.onclick = function() {
-    abrirPlayer(link, nome);
-  };
-  NovoCard.querySelector('.video-container').appendChild(btnAssistir);
-  
-  // Configurar like/dislike
-  const likeBtn = NovoCard.querySelector('.like-btn');
-  const dislikeBtn = NovoCard.querySelector('.dislike-btn');
-  const likeCount = NovoCard.querySelector('.like-count');
-  const dislikeCount = NovoCard.querySelector('.dislike-count');
-  let liked = false;
-  let disliked = false;
-  
-  likeBtn.onclick = function(e) {
-    e.stopPropagation();
-    if (!liked) {
-      liked = true;
-      likeBtn.classList.add('liked');
-      likeCount.textContent = parseInt(likeCount.textContent) + 1;
-      if (disliked) {
-        disliked = false;
-        dislikeBtn.classList.remove('disliked');
-        dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+      
+      let modelo = document.getElementById('modelodecard');
+      let NovoCard = modelo.cloneNode(true);
+      NovoCard.style.display = "block";
+      NovoCard.querySelector('.video-title').textContent = nome;
+      NovoCard.querySelector('.video-desc').textContent = desc;
+      
+      let btnAssistir = NovoCard.querySelector('.assistir-btn');
+      btnAssistir.onclick = function() {
+        abrirPlayer(link, nome, desc);
+      };
+      
+      document.querySelector('.Novosvideos').appendChild(NovoCard);
+      
+      document.getElementById('nomedovideo').value = '';
+      document.getElementById('linkparaovideo').value = '';
+      document.getElementById('descrição').value = '';
+      fecharjaneladobotaodepostarvideos();
+      
+      alert("Vídeo publicado!");
+    }
+
+    let currentLink = '';
+    let currentTitle = '';
+    let currentDesc = '';
+    let liked = false;
+    let disliked = false;
+    let likeCount = 0;
+    let dislikeCount = 0;
+
+    function abrirPlayer(link, titulo, desc) {
+      currentLink = link;
+      currentTitle = titulo;
+      currentDesc = desc || '';
+      
+      let linkEmbed = converterParaEmbed(link);
+      
+      if (!linkEmbed.includes('?')) {
+        linkEmbed += '?rel=0&modestbranding=1';
+      } else {
+        linkEmbed += '&rel=0&modestbranding=1';
       }
-    } else {
+      
+      document.getElementById('janelaplayer').style.display = 'block';
+      document.getElementById('titulodovideo').textContent = titulo;
+      document.getElementById('descricaodovideo').textContent = desc || 'Sem descrição';
+      
+      // Resetar like/dislike
       liked = false;
-      likeBtn.classList.remove('liked');
-      likeCount.textContent = parseInt(likeCount.textContent) - 1;
-    }
-  };
-  
-  dislikeBtn.onclick = function(e) {
-    e.stopPropagation();
-    if (!disliked) {
-      disliked = true;
-      dislikeBtn.classList.add('disliked');
-      dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-      if (liked) {
-        liked = false;
-        likeBtn.classList.remove('liked');
-        likeCount.textContent = parseInt(likeCount.textContent) - 1;
-      }
-    } else {
       disliked = false;
-      dislikeBtn.classList.remove('disliked');
-      dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+      likeCount = 0;
+      dislikeCount = 0;
+      document.getElementById('like-count').textContent = '0';
+      document.getElementById('dislike-count').textContent = '0';
+      document.getElementById('like-btn').classList.remove('liked');
+      document.getElementById('dislike-btn').classList.remove('disliked');
+      
+      // Limpar comentários
+      document.getElementById('comments-list').innerHTML = '';
+      
+      let playerDiv = document.getElementById('player');
+      playerDiv.innerHTML = '';
+      
+      let iframe = document.createElement('iframe');
+      iframe.src = linkEmbed;
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      
+      playerDiv.appendChild(iframe);
     }
-  };
-  
-  // Configurar compartilhamento
-  const shareBtn = NovoCard.querySelector('.share-btn');
-  shareBtn.onclick = function(e) {
-    e.stopPropagation();
-    if (navigator.share) {
-      navigator.share({
-        title: nome,
-        text: desc || 'Assista este vídeo no DevStream!',
-        url: window.location.href
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        alert('Link copiado para a área de transferência!');
-      }).catch(() => {
-        alert('Compartilhe este vídeo: ' + window.location.href);
-      });
-    }
-  };
-  
-  // Configurar comentários
-  const commentInput = NovoCard.querySelector('.comment-input');
-  const commentSubmit = NovoCard.querySelector('.comment-submit');
-  const commentsList = NovoCard.querySelector('.comments-list');
-  
-  commentSubmit.onclick = function(e) {
-    e.stopPropagation();
-    const text = commentInput.value.trim();
-    if (text) {
-      const commentDiv = document.createElement('div');
-      commentDiv.className = 'comment';
-      const user = document.getElementById('nomedousuario').textContent || 'Anônimo';
-      const time = new Date().toLocaleString();
-      commentDiv.innerHTML = `
-        <span class="comment-user">${user}</span>
-        <span class="comment-text">${text}</span>
-        <span class="comment-time">${time}</span>
-      `;
-      commentsList.appendChild(commentDiv);
-      commentInput.value = '';
-    }
-  };
-  
-  commentInput.onkeypress = function(e) {
-    if (e.key === 'Enter') {
-      commentSubmit.click();
-    }
-  };
-  
-  document.querySelector('.Novosvideos').appendChild(NovoCard);
-  
-  document.getElementById('nomedovideo').value = '';
-  document.getElementById('linkparaovideo').value = '';
-  document.getElementById('descrição').value = '';
-  fecharjaneladobotaodepostarvideos();
-  
-  alert("Vídeo publicado!");
-}
-function abrirPlayer(link, titulo) {
-  let linkEmbed = converterParaEmbed(link);
-  
- 
-  if (!linkEmbed.includes('?')) {
-    linkEmbed += '?rel=0&modestbranding=1';
-  } else {
-    linkEmbed += '&rel=0&modestbranding=1';
-  }
-  
-  document.getElementById('janelaplayer').style.display = 'block';
-  document.getElementById('titulodovideo').textContent = titulo;
-  
-  let playerDiv = document.getElementById('player');
-  playerDiv.innerHTML = '';
-  
-  let iframe = document.createElement('iframe');
-  iframe.src = linkEmbed;
-  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-  iframe.allowFullscreen = true;
-  
-  
 
-  playerDiv.appendChild(iframe);
-}
+    function fecharPlayer() {
+      document.getElementById('janelaplayer').style.display='none';
+      document.getElementById('player').innerHTML='';
+    }
 
-function fecharPlayer() {
-  document.getElementById('janelaplayer').style.display='none';
-  document.getElementById('player').innerHTML='';
-}
+    function converterParaEmbed(link){
+      if(link.includes('watch?v=')){
+        return link.replace('watch?v=','embed/');
+      }
+      if(link.includes('youtu.be/')){
+        return 'https://www.youtube.com/embed/'+link.split('youtu.be/')[1];
+      }
+      return link;
+    }
 
-function converterParaEmbed(link){
-  if(link.includes('watch?v=')){
-    return link.replace('watch?v=','embed/');
-  }
-  if(link.includes('youtu.be/')){
-    return 'https://www.youtube.com/embed/'+link.split('youtu.be/')[1];
-  }
-  return link;
-}
-</script>
+    // Like
+    document.getElementById('like-btn').onclick = function() {
+      if (!liked) {
+        liked = true;
+        likeCount++;
+        this.classList.add('liked');
+        if (disliked) {
+          disliked = false;
+          dislikeCount--;
+          document.getElementById('dislike-count').textContent = dislikeCount;
+          document.getElementById('dislike-btn').classList.remove('disliked');
+        }
+        document.getElementById('like-count').textContent = likeCount;
+      } else {
+        liked = false;
+        likeCount--;
+        this.classList.remove('liked');
+        document.getElementById('like-count').textContent = likeCount;
+      }
+    };
+
+    // Dislike
+    document.getElementById('dislike-btn').onclick = function() {
+      if (!disliked) {
+        disliked = true;
+        dislikeCount++;
+        this.classList.add('disliked');
+        if (liked) {
+          liked = false;
+          likeCount--;
+          document.getElementById('like-count').textContent = likeCount;
+          document.getElementById('like-btn').classList.remove('liked');
+        }
+        document.getElementById('dislike-count').textContent = dislikeCount;
+      } else {
+        disliked = false;
+        dislikeCount--;
+        this.classList.remove('disliked');
+        document.getElementById('dislike-count').textContent = dislikeCount;
+      }
+    };
+
+    // Compartilhar
+    document.getElementById('share-btn').onclick = function() {
+      if (navigator.share) {
+        navigator.share({
+          title: currentTitle,
+          text: currentDesc || 'Assista este vídeo no DevStream!',
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('Link copiado para a área de transferência!');
+        }).catch(() => {
+          alert('Compartilhe este vídeo: ' + window.location.href);
+        });
+      }
+    };
+
+    // Comentários
+    document.getElementById('comment-submit').onclick = function() {
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (text) {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        const user = document.getElementById('nomedousuario').textContent || 'Anônimo';
+        const time = new Date().toLocaleString();
+        commentDiv.innerHTML = `
+          <span class="comment-user">${user}</span>
+          <span class="comment-text">${text}</span>
+          <span class="comment-time">${time}</span>
+        `;
+        document.getElementById('comments-list').appendChild(commentDiv);
+        input.value = '';
+      }
+    };
+
+    document.getElementById('comment-input').onkeypress = function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('comment-submit').click();
+      }
+    };
+  </script>
 </body>
 </html>
