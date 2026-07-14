@@ -119,6 +119,37 @@
     overflow-y: auto;
     box-shadow: 0 0 8px #5b8def;
     z-index: 1000;
+    overflow-y: auto;
+  }
+ .janelapostarvideos::-webkit-scrollbar {
+    width: 8px !important;
+  }
+  .janelapostarvideos::-webkit-scrollbar-track {
+    background: #1a1a1a !important;
+    border-radius: 4px !important;
+  }
+  .janelapostarvideos::-webkit-scrollbar-thumb {
+    background: #5b8def !important;
+    border-radius: 4px !important;
+  }
+  .janelapostarvideos::-webkit-scrollbar-thumb:hover {
+    background: #3ea6ff !important;
+  }
+  #previewVideo {
+	  border: 2px solid #5b8def;
+  }
+  ::-webkit-scrollbar {
+	  width: 8px !important;
+  }
+  ::-webkit-scrollbar-thumb {
+	  background: #5b8def !important;
+	  border-radius: 4px !important;
+  }
+  ::-webkit-scrollbar-track {
+	  background: #1a1a1a !important;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+	  background: #3ea6ff !important;
   }
   .janeladecriarconta h2 {
     color: #303134;
@@ -126,8 +157,7 @@
   }
   .janelapostarvideos button {
     display: block;
-    width: 100%;
-    margin: 10px 0;
+    margin: 0 auto;
     background: transparent;
 	  color: white;
   }
@@ -257,7 +287,7 @@
   }
   
   .action-btn:hover {
-    background: rgba(255,255,255,0.08);
+    background: transparent;
     color: white;
   }
   
@@ -308,8 +338,9 @@
   }
   
   .share-btn:hover {
-    background: rgba(255,255,255,0.08);
+    background: transparent;
     color: white;
+    transform: scale(1.2);
   }
   
   .share-btn svg {
@@ -390,17 +421,18 @@
     cursor: pointer;
     transition: all 0.3s;
     stroke: currentColor;
-    fill: none;
+    fill: currentColor;
     stroke-width: 2;
   }
   
   .action-btn.liked .coracao-svg {
     fill: #3ea6ff;
     stroke: #3ea6ff;
+    transform: scale(1.2);
   }
   
   .coracao-svg:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
   
   /* Ícone de Dislike - Polegar para baixo */
@@ -418,6 +450,7 @@
   
   .action-btn.disliked .dislike-svg {
     fill: #3ea6ff;
+    transform: scale(1.2);
   }
   
   .action-btn.disliked .dislike-svg path {
@@ -425,7 +458,7 @@
   }
   
   .dislike-svg:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
   
   .carddosvideos .video-container {
@@ -451,7 +484,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #0a0a0a;
+    background: rgba(10,10,10,0.95);
     z-index: 1000;
     padding: 0;
     margin: 0;
@@ -472,6 +505,7 @@
 
   #janelaplayer::-webkit-scrollbar-track {
     background: #1a1a1a;
+    border: none;
   }
 
   /* Header do player (logo + nome) - SEM BOTÃO FECHAR */
@@ -596,6 +630,9 @@
   .comment-input-area input:focus {
 	  border: 1px solid #5b8def;
   }
+  .logoenome p {
+	  font-family: Georgia;
+  }
 </style>
 </head>
 <body>
@@ -638,6 +675,16 @@
   </div>
   <div id="janeladobotaodepostarvideos" class="janelapostarvideos">
     <h2>Postar um video</h2>
+     <input type="file" id="arquivovideo" accept="video/*" style="display: none;">
+  <button id="btnSelecionarVideo" style="width: 100%; justify-content: center; background: #444; color: white; padding: 10px; border-radius: 10px; border: 2px dashed #5b8def; margin-bottom: 10px;">
+    Selecionar vídeo do computador
+  </button>
+  <div id="previewVideo" style="display: none; margin: 10px 0; background: #1a1a1a; padding: 10px; border-radius: 10px;">
+    <video id="videoPreview" controls style="width: 100%; max-height: 200px; border-radius: 10px; background: #000;"></video>
+    <p id="nomeArquivo" style="color: #aaa; font-size: 12px; margin-top: 5px;"></p>
+  </div>
+  
+  <p style="color: #555; margin: 5px 0;">— ou —</p>
     <input type="text" id="nomedovideo" placeholder="Escreva aqui o nome para o seu vídeo">
     <input type="text" id="linkparaovideo" placeholder="Link para o vídeo do Youtube">
     <textarea id="descrição" placeholder="Descrição" rows="4"></textarea>
@@ -668,7 +715,7 @@
         <p class="video-desc" id="descricaodovideo">Descrição do vídeo</p>
         <div class="video-actions">
           <button class="action-btn like-btn" id="like-btn">
-            <svg class="coracao-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="coracao-svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
             <span class="like-count" id="like-count">0</span>
@@ -703,7 +750,15 @@
   </div>
   
   <script>
-    // ========== SALVAR E CARREGAR VÍDEOS ==========
+    // ========== VARIÁVEIS GLOBAIS ==========
+    let currentTitle = '';
+    let liked = false;
+    let disliked = false;
+    let likeCount = 0;
+    let dislikeCount = 0;
+    let videoFile = null;
+
+    // ========== SALVAR VÍDEOS ==========
     function salvarVideos() {
       const videos = [];
       const cards = document.querySelectorAll('.carddosvideos:not(#modelodecard)');
@@ -711,30 +766,48 @@
         const titulo = card.querySelector('.video-title').textContent;
         const desc = card.querySelector('.video-desc').textContent;
         const link = card.dataset.link || '';
-        videos.push({ titulo, desc, link });
+        // Só salva vídeos do YouTube (não salva vídeos locais)
+        if (link && !link.startsWith('data:video/')) {
+          videos.push({ titulo, desc, link });
+        }
       });
-      localStorage.setItem('videos', JSON.stringify(videos));
+      localStorage.setItem('devstream_videos', JSON.stringify(videos));
+      console.log('✅ Vídeos salvos:', videos.length);
     }
 
+    // ========== CARREGAR VÍDEOS ==========
     function carregarVideos() {
-      const videosSalvos = localStorage.getItem('videos');
+      const videosSalvos = localStorage.getItem('devstream_videos');
       if (videosSalvos) {
-        const videos = JSON.parse(videosSalvos);
-        // Limpa os cards existentes (menos o modelo)
-        const cardsExistentes = document.querySelectorAll('.carddosvideos:not(#modelodecard)');
-        cardsExistentes.forEach(card => card.remove());
-        
-        videos.forEach(video => {
-          criarCardVideo(video.titulo, video.link, video.desc);
-        });
+        try {
+          const videos = JSON.parse(videosSalvos);
+          // Remove apenas os cards de vídeos do YouTube (mantém os locais)
+          const cardsExistentes = document.querySelectorAll('.carddosvideos:not(#modelodecard)');
+          cardsExistentes.forEach(card => {
+            const link = card.dataset.link || '';
+            if (link && !link.startsWith('data:video/')) {
+              card.remove();
+            }
+          });
+          
+          console.log('🔄 Carregando vídeos:', videos.length);
+          
+          videos.forEach(video => {
+            criarCardVideo(video.titulo, video.link, video.desc);
+          });
+        } catch (e) {
+          console.error('Erro ao carregar vídeos:', e);
+        }
       }
     }
 
+    // ========== CRIAR CARD VIDEO ==========
     function criarCardVideo(nome, link, desc) {
       let modelo = document.getElementById('modelodecard');
       let NovoCard = modelo.cloneNode(true);
       NovoCard.style.display = "block";
       NovoCard.dataset.link = link;
+      NovoCard.dataset.local = "false";
       NovoCard.querySelector('.video-title').textContent = nome;
       NovoCard.querySelector('.video-desc').textContent = desc || '';
       
@@ -744,6 +817,20 @@
       };
       
       document.querySelector('.Novosvideos').appendChild(NovoCard);
+      console.log('📹 Card criado:', nome);
+    }
+
+    // ========== SALVAR ESTADO (LIKES/DISLIKES) ==========
+    function salvarEstadoVideo(titulo, likes, dislikes, likedState, dislikedState) {
+      const estados = JSON.parse(localStorage.getItem('devstream_estados') || '{}');
+      estados[titulo] = { likes, dislikes, liked: likedState, disliked: dislikedState };
+      localStorage.setItem('devstream_estados', JSON.stringify(estados));
+      console.log('💾 Estado salvo:', titulo, { likes, dislikes });
+    }
+
+    function carregarEstadoVideo(titulo) {
+      const estados = JSON.parse(localStorage.getItem('devstream_estados') || '{}');
+      return estados[titulo] || null;
     }
 
     // ========== FUNÇÕES DE INÍCIO ==========
@@ -761,23 +848,21 @@
     document.getElementById('btnInicio').onclick = irParaInicio;
 
     // ========== CRIAÇÃO DE CONTA ==========
-    const criarconta = document.getElementById("criarconta");
-    const janela = document.getElementById("janeladecriarconta");
-
-    criarconta.onclick = function () {
-      janeladecriarconta.style.display = "block";
+    document.getElementById('criarconta').onclick = function() {
+      document.getElementById('janeladecriarconta').style.display = "block";
     };
 
     function fecharjaneladecriarconta() {
-      janeladecriarconta.style.display = "none";
+      document.getElementById('janeladecriarconta').style.display = "none";
     }
+
     function criarConta() { 
       const nome = document.getElementById('nomedaconta').value;
       if (nome) {
         document.getElementById('nomedousuario').textContent = nome;
-        localStorage.setItem('nomedousuario', nome);
+        localStorage.setItem('devstream_usuario', nome);
         document.getElementById('criarconta').style.display = 'none';
-        alert('Conta criada Bem Vindo, ' + nome);
+        alert('Bem vindo, ' + nome);
         fecharjaneladecriarconta();
       } else {
         alert('Digite um nome');
@@ -785,51 +870,115 @@
     }
 
     // ========== POSTAR VÍDEOS ==========
-    const postarvideos = document.getElementById("postarvideos");
-    const janelapostarvideos = document.getElementById("janeladobotaodepostarvideos");
-    postarvideos.onclick = function () {
-      janelapostarvideos.style.display = "block"
+    document.getElementById('postarvideos').onclick = function() {
+      document.getElementById('janeladobotaodepostarvideos').style.display = "block";
     };
-    function fecharjaneladobotaodepostarvideos () {
-      janelapostarvideos.style.display = "none"
+
+    function fecharjaneladobotaodepostarvideos() {
+      document.getElementById('janeladobotaodepostarvideos').style.display = "none";
     }
-    
+
+    // ========== UPLOAD DE VÍDEO LOCAL ==========
+    document.getElementById('btnSelecionarVideo').onclick = function() {
+      document.getElementById('arquivovideo').click();
+    };
+
+    document.getElementById('arquivovideo').onchange = function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        videoFile = file;
+        const url = URL.createObjectURL(file);
+        const video = document.getElementById('videoPreview');
+        video.src = url;
+        document.getElementById('previewVideo').style.display = 'block';
+        document.getElementById('nomeArquivo').textContent = '📹 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+      }
+    };
+
+    // ========== PUBLICAR VÍDEO ==========
     document.getElementById('publicarvideo').onclick = function() {
-      let nome = document.getElementById('nomedovideo').value;
-      let link = document.getElementById('linkparaovideo').value;
-      let desc = document.getElementById('descrição').value;
+      let nome = document.getElementById('nomedovideo').value.trim();
+      let desc = document.getElementById('descrição').value.trim();
+      let link = document.getElementById('linkparaovideo').value.trim();
       
-      if (nome === "" || link === "") {
-        alert("Preencha tudo");
+      if (nome === "") {
+        alert("Digite um nome para o vídeo");
         return;
       }
       
-      criarCardVideo(nome, link, desc);
-      salvarVideos();
+      if (!link && !videoFile) {
+        alert("Coloque um link do YouTube OU selecione um vídeo do computador");
+        return;
+      }
       
-      document.getElementById('nomedovideo').value = '';
-      document.getElementById('linkparaovideo').value = '';
-      document.getElementById('descrição').value = '';
-      fecharjaneladobotaodepostarvideos();
+      // Se for vídeo do YouTube
+      if (link) {
+        criarCardVideo(nome, link, desc);
+        salvarVideos();
+        
+        document.getElementById('nomedovideo').value = '';
+        document.getElementById('descrição').value = '';
+        document.getElementById('linkparaovideo').value = '';
+        fecharjaneladobotaodepostarvideos();
+        alert("✅ Vídeo publicado!");
+        return;
+      }
       
-      alert("Vídeo publicado!");
+      // Se for vídeo local (NÃO SALVA no localStorage por causa do tamanho)
+      if (videoFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const videoData = e.target.result;
+          criarCardVideoLocal(nome, videoData, desc);
+          // Vídeos locais não são salvos no localStorage (ocupam muito espaço)
+          
+          document.getElementById('nomedovideo').value = '';
+          document.getElementById('descrição').value = '';
+          document.getElementById('linkparaovideo').value = '';
+          document.getElementById('arquivovideo').value = '';
+          document.getElementById('previewVideo').style.display = 'none';
+          videoFile = null;
+          fecharjaneladobotaodepostarvideos();
+          alert("✅ Vídeo local publicado! (Não será salvo ao recarregar)");
+        };
+        reader.readAsDataURL(videoFile);
+      }
+    };
+
+    // ========== CRIAR CARD VIDEO LOCAL ==========
+    function criarCardVideoLocal(nome, videoData, desc) {
+      let modelo = document.getElementById('modelodecard');
+      let NovoCard = modelo.cloneNode(true);
+      NovoCard.style.display = "block";
+      NovoCard.dataset.link = videoData;
+      NovoCard.dataset.local = "true";
+      NovoCard.querySelector('.video-title').textContent = nome;
+      NovoCard.querySelector('.video-desc').textContent = desc || '';
+      
+      let btnAssistir = NovoCard.querySelector('.assistir-btn');
+      btnAssistir.onclick = function() {
+        abrirPlayerLocal(videoData, nome, desc);
+      };
+      
+      document.querySelector('.Novosvideos').appendChild(NovoCard);
     }
 
-    // ========== PLAYER ==========
-    let currentLink = '';
-    let currentTitle = '';
-    let currentDesc = '';
-    let liked = false;
-    let disliked = false;
-    let likeCount = 0;
-    let dislikeCount = 0;
-
+    // ========== ABRIR PLAYER ==========
     function abrirPlayer(link, titulo, desc) {
-      currentLink = link;
-      currentTitle = titulo;
-      currentDesc = desc || '';
+      // Se for vídeo local
+      if (link && link.startsWith('data:video/')) {
+        abrirPlayerLocal(link, titulo, desc);
+        return;
+      }
       
-      let linkEmbed = converterParaEmbed(link);
+      currentTitle = titulo;
+      
+      let linkEmbed = link;
+      if (linkEmbed.includes('watch?v=')) {
+        linkEmbed = linkEmbed.replace('watch?v=', 'embed/');
+      } else if (linkEmbed.includes('youtu.be/')) {
+        linkEmbed = 'https://www.youtube.com/embed/' + linkEmbed.split('youtu.be/')[1];
+      }
       
       if (!linkEmbed.includes('?')) {
         linkEmbed += '?rel=0&modestbranding=1';
@@ -841,14 +990,24 @@
       document.getElementById('titulodovideo').textContent = titulo;
       document.getElementById('descricaodovideo').textContent = desc || 'Sem descrição';
       
-      liked = false;
-      disliked = false;
-      likeCount = 0;
-      dislikeCount = 0;
-      document.getElementById('like-count').textContent = '0';
-      document.getElementById('dislike-count').textContent = '0';
-      document.getElementById('like-btn').classList.remove('liked');
-      document.getElementById('dislike-btn').classList.remove('disliked');
+      // Carregar estado
+      const estado = carregarEstadoVideo(titulo);
+      if (estado) {
+        liked = estado.liked || false;
+        disliked = estado.disliked || false;
+        likeCount = estado.likes || 0;
+        dislikeCount = estado.dislikes || 0;
+      } else {
+        liked = false;
+        disliked = false;
+        likeCount = 0;
+        dislikeCount = 0;
+      }
+      
+      document.getElementById('like-count').textContent = likeCount;
+      document.getElementById('dislike-count').textContent = dislikeCount;
+      document.getElementById('like-btn').classList.toggle('liked', liked);
+      document.getElementById('dislike-btn').classList.toggle('disliked', disliked);
       
       document.getElementById('comments-list').innerHTML = '';
       
@@ -859,40 +1018,76 @@
       iframe.src = linkEmbed;
       iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       iframe.allowFullscreen = true;
+      iframe.style.width = '100%';
+      iframe.style.height = '450px';
+      iframe.style.borderRadius = '10px';
       
       playerDiv.appendChild(iframe);
-      
       document.body.style.overflow = 'hidden';
     }
 
+    // ========== ABRIR PLAYER LOCAL ==========
+    function abrirPlayerLocal(videoData, titulo, desc) {
+      currentTitle = titulo;
+      
+      document.getElementById('janelaplayer').style.display = 'block';
+      document.getElementById('titulodovideo').textContent = titulo;
+      document.getElementById('descricaodovideo').textContent = desc || 'Sem descrição';
+      
+      const estado = carregarEstadoVideo(titulo);
+      if (estado) {
+        liked = estado.liked || false;
+        disliked = estado.disliked || false;
+        likeCount = estado.likes || 0;
+        dislikeCount = estado.dislikes || 0;
+      } else {
+        liked = false;
+        disliked = false;
+        likeCount = 0;
+        dislikeCount = 0;
+      }
+      
+      document.getElementById('like-count').textContent = likeCount;
+      document.getElementById('dislike-count').textContent = dislikeCount;
+      document.getElementById('like-btn').classList.toggle('liked', liked);
+      document.getElementById('dislike-btn').classList.toggle('disliked', disliked);
+      
+      document.getElementById('comments-list').innerHTML = '';
+      
+      let playerDiv = document.getElementById('player');
+      playerDiv.innerHTML = '';
+      
+      let video = document.createElement('video');
+      video.src = videoData;
+      video.controls = true;
+      video.style.width = '100%';
+      video.style.height = '450px';
+      video.style.borderRadius = '10px';
+      video.style.background = '#000';
+      
+      playerDiv.appendChild(video);
+      document.body.style.overflow = 'hidden';
+    }
+
+    // ========== FECHAR PLAYER ==========
     function fecharPlayer() {
+      if (currentTitle) {
+        salvarEstadoVideo(currentTitle, likeCount, dislikeCount, liked, disliked);
+      }
       document.getElementById('janelaplayer').style.display = 'none';
       document.getElementById('player').innerHTML = '';
       document.body.style.overflow = 'auto';
     }
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        fecharPlayer();
-      }
+      if (e.key === 'Escape') fecharPlayer();
     });
 
-    function converterParaEmbed(link){
-      if(link.includes('watch?v=')){
-        return link.replace('watch?v=','embed/');
-      }
-      if(link.includes('youtu.be/')){
-        return 'https://www.youtube.com/embed/'+link.split('youtu.be/')[1];
-      }
-      return link;
-    }
-
-    // ========== LIKE / DISLIKE ==========
+    // ========== LIKE ==========
     document.getElementById('like-btn').onclick = function() {
       if (!liked) {
         liked = true;
         likeCount++;
-        this.classList.add('liked');
         if (disliked) {
           disliked = false;
           dislikeCount--;
@@ -900,19 +1095,23 @@
           document.getElementById('dislike-btn').classList.remove('disliked');
         }
         document.getElementById('like-count').textContent = likeCount;
+        this.classList.add('liked');
       } else {
         liked = false;
         likeCount--;
-        this.classList.remove('liked');
         document.getElementById('like-count').textContent = likeCount;
+        this.classList.remove('liked');
+      }
+      if (currentTitle) {
+        salvarEstadoVideo(currentTitle, likeCount, dislikeCount, liked, disliked);
       }
     };
 
+    // ========== DISLIKE ==========
     document.getElementById('dislike-btn').onclick = function() {
       if (!disliked) {
         disliked = true;
         dislikeCount++;
-        this.classList.add('disliked');
         if (liked) {
           liked = false;
           likeCount--;
@@ -920,11 +1119,15 @@
           document.getElementById('like-btn').classList.remove('liked');
         }
         document.getElementById('dislike-count').textContent = dislikeCount;
+        this.classList.add('disliked');
       } else {
         disliked = false;
         dislikeCount--;
-        this.classList.remove('disliked');
         document.getElementById('dislike-count').textContent = dislikeCount;
+        this.classList.remove('disliked');
+      }
+      if (currentTitle) {
+        salvarEstadoVideo(currentTitle, likeCount, dislikeCount, liked, disliked);
       }
     };
 
@@ -933,14 +1136,13 @@
       if (navigator.share) {
         navigator.share({
           title: currentTitle,
-          text: currentDesc || 'Assista este vídeo no DevStream!',
           url: window.location.href
         }).catch(() => {});
       } else {
         navigator.clipboard.writeText(window.location.href).then(() => {
-          alert('Link copiado para a área de transferência!');
+          alert('Link copiado!');
         }).catch(() => {
-          alert('Compartilhe este vídeo: ' + window.location.href);
+          alert('Compartilhe: ' + window.location.href);
         });
       }
     };
@@ -965,20 +1167,22 @@
     };
 
     document.getElementById('comment-input').onkeypress = function(e) {
-      if (e.key === 'Enter') {
-        document.getElementById('comment-submit').click();
-      }
+      if (e.key === 'Enter') document.getElementById('comment-submit').click();
     };
 
     // ========== INICIALIZAR ==========
     window.onload = function() {
-      const nomesalvo = localStorage.getItem('nomedousuario');
-      if(nomesalvo) {
-        document.getElementById('nomedousuario').textContent = nomesalvo;
+      const usuario = localStorage.getItem('devstream_usuario');
+      if (usuario) {
+        document.getElementById('nomedousuario').textContent = usuario;
         document.getElementById('criarconta').style.display = 'none';
       }
       
       carregarVideos();
+      
+      console.log('📦 DevStream inicializado!');
+      console.log('📹 Vídeos salvos:', localStorage.getItem('devstream_videos'));
+      console.log('💾 Estados salvos:', localStorage.getItem('devstream_estados'));
     };
   </script>
 </body>
